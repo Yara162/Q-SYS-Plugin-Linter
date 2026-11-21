@@ -50,7 +50,7 @@ To silence one line, end it with `-- qsys-lint: ignore`, or `-- qsys-lint: ignor
 
 ```yaml
 - uses: actions/checkout@v4
-- uses: Yara162/Q-SYS-Plugin-Linter@v0.1.0
+- uses: Yara162/Q-SYS-Plugin-Linter@main
   with:
     files: "*.qplug"
     fail-on: error
