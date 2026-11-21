@@ -1,0 +1,51 @@
+-- A small, correct plugin used as the linter's clean baseline.
+PluginInfo = {
+    Name = "Examples~Good Plugin",
+    Version = "1.0.0",
+    Id = "examples.good-plugin",
+    Description = "A plugin with something different with it.",
+    Author = "qsys-lint tests",
+}
+
+function GetPrettyName() return "Good Plugin v" .. PluginInfo.Version end
+
+function GetProperties()
+    return {
+        { Name = "Channel Count", Type = "integer", Min = 1, Max = 8, Value = 2 },
+        { Name = "Mode", Type = "enum", Choices = { "A", "B" }, Value = "A" },
+    }
+end
+
+function GetPages() return { { name = "Main" } } end
+
+function GetControls(props)
+    local n = props["Channel Count"].Value
+    return {
+        { Name = "Gain", ControlType = "Knob", ControlUnit = "dB", Min = -100, Max = 20, Count = n, PinStyle = "Both", UserPin = true },
+        { Name = "Mute", ControlType = "Button", ButtonType = "Toggle", PinStyle = "Both", UserPin = true },
+        { Name = "Status", ControlType = "Indicator", IndicatorType = "Status", PinStyle = "Output", UserPin = true },
+    }
+end
+
+function GetControlLayout(props)
+    local layout, graphics = {}, {}
+    local n = props["Channel Count"].Value
+    for i = 1, n do
+        layout["Gain " .. i] = { Style = "Fader", Position = { 10 + 40 * (i - 1), 30 }, Size = { 36, 120 } }
+    end
+    layout["Mute"] = { Style = "Button", Position = { 10, 160 }, Size = { 36, 20 } }
+    layout["Status"] = { Style = "Text", Position = { 10, 190 }, Size = { 120, 20 } }
+    table.insert(graphics, { Type = "Label", Text = "Good", Position = { 10, 6 }, Size = { 120, 20 } })
+    return layout, graphics
+end
+
+if Controls then
+    local function show(msg) Controls.Status.String = msg end
+    Controls.Mute.EventHandler = function(c)
+        show(c.Boolean and "muted" or "ok")
+        print(Properties["Mode"].Value)
+    end
+    for i = 1, #Controls.Gain do
+        Controls.Gain[i].EventHandler = function() show("gain " .. i) end
+    end
+end

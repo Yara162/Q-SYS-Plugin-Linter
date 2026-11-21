@@ -1,0 +1,43 @@
+-- A plugin with one of nearly every mistake the linter knows. Line numbers matter to the tests.
+PluginInfo = {
+    Name = "Examples~Bad Plugin",
+    Version = "2.1",
+    Id = "examples.bad-plugin.2.1",
+}
+
+function GetProperties()
+    return {
+        { Name = "Count", Type = "integer", Min = 1, Max = 4, Value = 9 },
+        { Name = "Flavor", Type = "enum", Choices = { "Sweet", "Sour" }, Value = "Salty" },
+        { Name = "Count", Type = "number", Value = 1 },
+    }
+end
+
+function GetControls(props)
+    return {
+        { Name = "Volume", ControlType = "Knob", ControlUnit = "Integer", Min = 10, Max = 0, PinStyle = "Both", UserPin = true },
+        { Name = "Power", ControlType = "Switch" },
+        { Name = "Power", ControlType = "Button", ButtonType = "Latching" },
+        { Name = "Hidden", ControlType = "Text" },
+        { Name = "Lamp", ControlType = "Indicator", IndicatorType = "Bulb", UserPin = true },
+    }
+end
+
+function GetControlLayout(props)
+    local layout, graphics = {}, {}
+    layout["Volume"] = { Style = "Fader", Position = { 10, 10 }, Size = { 36 } }
+    layout["Power"] = { Style = "Button", Position = { 50, 10 }, Size = { 36, 20 } }
+    layout["Lamp"] = { Style = "Led", Position = { 90, 10 }, Size = { 16, 16 } }
+    layout["Ghost"] = { Style = "Button", Position = { 10, 60 }, Size = { 36, 20 } }
+    table.insert(graphics, { Type = "Circle", Position = { 0, 0 }, Size = { 10, 10 } })
+    return layout, graphics
+end
+
+if Controls then
+    helper()
+    local function helper() Controls.Volume.Value = 0 end
+    Controls.Mute.EventHandler = function() end
+    print(Properties["Colour"].Value)
+    local f = io.open("/tmp/x")
+    while true do end
+end
